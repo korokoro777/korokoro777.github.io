@@ -45,6 +45,9 @@
       text-decoration: none;
       color: #0066cc;
     }
+    .project {
+      padding-bottom: 150px; /* 下に空間 */
+     }
 
   </style>
 </head>
@@ -177,27 +180,29 @@
   </div>
 
   <script>
-    const iframes = document.querySelectorAll('iframe');
+ const iframes = document.querySelectorAll('iframe');
+ const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    const iframe = entry.target;
+    const url = iframe.dataset.src;
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        const iframe = entry.target;
-        if (entry.isIntersecting) {
-          // 表示領域に入ったら読み込み＆表示
-          if (!iframe.src) {
-            iframe.src = iframe.dataset.src;
-          }
-          iframe.style.display = 'block';
-        } else {
-          // 外に出たら完全に停止させる（GPU負荷カット）
-          iframe.style.display = 'none';
-          iframe.src = '';
-        }
-      });
-    }, {
-      rootMargin: "100px",
-      threshold: 0.1
-    });
+    if (entry.isIntersecting) {
+      iframe.setAttribute('src', url);
+      iframe.style.visibility = 'visible';
+    } else {
+      iframe.removeAttribute('src');
+      iframe.style.visibility = 'hidden';
+    }
+  });
+}, {
+  rootMargin: "100px",
+  threshold: 0.1
+});
+
+iframes.forEach(iframe => observer.observe(iframe));
+</script>
+</body>
+</html>
 
     iframes.forEach(iframe => observer.observe(iframe));
   </script>
