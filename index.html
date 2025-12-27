@@ -1,210 +1,365 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Hiromiの実験メモ</title>
-  <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WebGL Gallery</title>
+<style>
+    /* === 全体の設定 === */
     body {
-      font-family: sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 2em;
-      color: #333;
+        margin: 0;
+        padding: 0;
+        background-color: #121212; /* ダークな背景 */
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+        color: #fff;
     }
 
+    /* === タイトル === */
     h1 {
-      text-align: center;
-      margin-bottom: 1.5em;
-      color: #444;
+        text-align: center;
+        padding: 60px 0 40px;
+        margin: 0;
+        color: #00ffaa; /* マトリックス風グリーン */
+        letter-spacing: 0.1em;
+        font-size: 2rem;
+        text-shadow: 0 0 15px rgba(0, 255, 170, 0.4);
     }
 
+    /* === グリッドレイアウト（レスポンシブ） === */
     .wrapper {
-      max-width: 800px;
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 1.5em;
+        display: grid;
+        /* 画面幅に合わせて自動で列数を調整（最小幅300px） */
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 24px;
+        padding: 20px 40px 80px; /* 下に余裕を持たせる */
+        max-width: 1400px;
+        margin: 0 auto;
     }
 
-   .project iframe {
+    /* === カードのデザイン === */
+    .project-card {
+        display: block; /* リンク全体をブロック要素に */
+        background: #1e1e1e;
+        border-radius: 12px;
+        overflow: hidden; /* 画像のはみ出しをカット */
+        text-decoration: none; /* 下線を消す */
+        color: #e0e0e0;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        position: relative;
+        border: 1px solid #333;
+    }
+
+    /* ホバー時のカード全体の動き */
+    .project-card:hover {
+        transform: translateY(-7px); /* ふわっと浮き上がる */
+        box-shadow: 0 12px 25px rgba(0, 255, 170, 0.2); /* 緑色の光る影 */
+        border-color: #00ffaa;
+    }
+
+    /* === 画像エリアの設定 === */
+    .image-box {
         width: 100%;
-        aspect-ratio: 1 / 1;
-        border: 1px solid #ddd;
-        border-radius: 6px;
-        margin-top: 0.5em;
-        background: #fff;
+        height: 200px; /* 画像の高さを統一 */
+        overflow: hidden;
+        background: #000;
+        position: relative;
     }
 
-    .project h2 {
-      font-size: 1.1em;
-      margin-top: 0;
+    .image-box img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; /* 画像の比率を崩さずトリミング */
+        transition: transform 0.5s ease; /* ズームのアニメーション */
+        opacity: 0.8;
     }
 
-    .project a {
-      text-decoration: none;
-      color: #0066cc;
+    /* ホバー時に画像をズーム＆明るく */
+    .project-card:hover .image-box img {
+        transform: scale(1.1);
+        opacity: 1;
     }
-    .project {
-      padding-bottom: 150px; /* 下に空間 */
-     }
 
-  </style>
+    /* === タイトルエリア === */
+    .card-info {
+        padding: 15px 20px;
+        border-top: 1px solid #333;
+        background: #252525;
+    }
+
+    .card-info h2 {
+        font-size: 1.1rem;
+        margin: 0;
+        font-weight: normal;
+        transition: color 0.3s;
+    }
+
+    /* ホバー時にタイトル色を変える */
+    .project-card:hover .card-info h2 {
+        color: #00ffaa;
+        font-weight: bold;
+    }
+</style>
 </head>
 <body>
 
-  <h1>🔧 GitHub Pagesリンク</h1>
-  <div class="wrapper">
-    <div class="project">
-        <h2><a href="threejs-no1-1/" target="_blank">Three.js デモ1</a></h2>
-      <iframe data-src="threejs-no1-1/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-no1-2/" target="_blank">Three.js デモ2</a></h2>
-      <iframe data-src="threejs-no1-2/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-no1-3/" target="_blank">Three.js デモ3</a></h2>
-      <iframe data-src="threejs-no1-3/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-no2-1/" target="_blank">Three.js デモ4</a></h2>
-        <iframe data-src="threejs-no2-1/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-no2-2/" target="_blank">Three.js デモ5</a></h2>
-        <iframe data-src="threejs-no2-2/" sandbox="allow-scripts"></iframe>
+    <h1>🔧 GitHub Pagesリンク</h1>
+
+    <div class="wrapper">
+        
+        <a href="threejs-no1-1/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+1" alt="Demo 1" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ1</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no1-2/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+2" alt="Demo 2" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ2</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no1-3/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+3" alt="Demo 3" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ3</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no2-1/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+4" alt="Demo 4" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ4</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no2-2/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+5" alt="Demo 5" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ5</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no3-1/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+6" alt="Demo 6" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ6</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no3-2/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+7" alt="Demo 7" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ7</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no3-3/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+8" alt="Demo 8" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ8</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no3-4/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+9" alt="Demo 9" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ9</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no3-5/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+10" alt="Demo 10" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ10</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no4-1/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+11" alt="Demo 11" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ11</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no4-2/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+12" alt="Demo 12" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ12</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no4-3/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+13" alt="Demo 13" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ13</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no4-4/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+14" alt="Demo 14" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ14</h2>
+            </div>
+        </a>
+
+        <a href="threejs-no5-1/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+15" alt="Demo 15" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ15</h2>
+            </div>
+        </a>
+
+        <a href="threejs-animation-system/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+16" alt="Demo 16" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ16</h2>
+            </div>
+        </a>
+
+        <a href="threejs-mixsamo-anim/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Three.js+Demo+17" alt="Demo 17" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js デモ17</h2>
+            </div>
+        </a>
+
+        <a href="threejs-glsl-no1-1/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Shader+Demo+1" alt="Shader Demo 1" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js シェーダーデモ1</h2>
+            </div>
+        </a>
+
+        <a href="threejs-glsl-no1-2/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Shader+Demo+2" alt="Shader Demo 2" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js シェーダーデモ2</h2>
+            </div>
+        </a>
+
+        <a href="threejs-glsl-no1-3/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Shader+Demo+3" alt="Shader Demo 3" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js シェーダーデモ3</h2>
+            </div>
+        </a>
+
+        <a href="threejs-glsl-no2-1/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Shader+Demo+4" alt="Shader Demo 4" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js シェーダーデモ4</h2>
+            </div>
+        </a>
+
+        <a href="threejs-glsl-no2-2/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Shader+Demo+5" alt="Shader Demo 5" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js シェーダーデモ5</h2>
+            </div>
+        </a>
+
+        <a href="threejs-glsl-no2-3/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Shader+Demo+6" alt="Shader Demo 6" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js シェーダーデモ6</h2>
+            </div>
+        </a>
+
+        <a href="threejs-glsl-no3-1/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Shader+Demo+7" alt="Shader Demo 7" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js シェーダーデモ7</h2>
+            </div>
+        </a>
+
+        <a href="threejs-glsl-no3-2/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Shader+Demo+8" alt="Shader Demo 8" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js シェーダーデモ8</h2>
+            </div>
+        </a>
+
+        <a href="threejs-rain-window/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=Rain+Window" alt="Rain Window" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>Three.js シェーダー窓越しの雨</h2>
+            </div>
+        </a>
+
+        <a href="webgl-fundamental-1/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=WebGL+Demo+1" alt="WebGL Demo 1" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>WebGL デモ1</h2>
+            </div>
+        </a>
+
+        <a href="webgl-fundamental-2/" class="project-card" target="_blank">
+            <div class="image-box">
+                <img src="https://placehold.co/600x400/222/00ffaa?text=WebGL+Demo+2" alt="WebGL Demo 2" loading="lazy">
+            </div>
+            <div class="card-info">
+                <h2>WebGL デモ2</h2>
+            </div>
+        </a>
+
     </div>
 
-    <div class="project">
-        <h2><a href="threejs-no3-1/" target="_blank">Three.js デモ6</a></h2>
-        <iframe data-src="threejs-no3-1/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-no3-2/" target="_blank">Three.js デモ7</a></h2>
-        <iframe data-src="threejs-no3-2/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-no3-3/" target="_blank">Three.js デモ8</a></h2>
-        <iframe data-src="threejs-no3-3/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-no3-4/" target="_blank">Three.js デモ9</a></h2>
-        <iframe data-src="threejs-no3-4/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-no3-5/" target="_blank">Three.js デモ10</a></h2>
-        <iframe data-src="threejs-no3-5/" sandbox="allow-scripts"></iframe>
-    </div>
-
-    <div class="project">
-        <h2><a href="threejs-no4-1/" target="_blank">Three.js デモ11</a></h2>
-        <iframe data-src="threejs-no4-1/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-no4-2/" target="_blank">Three.js デモ12</a></h2>
-        <iframe data-src="threejs-no4-2/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-no4-3/" target="_blank">Three.js デモ13</a></h2>
-        <iframe data-src="threejs-no4-3/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-no4-4/" target="_blank">Three.js デモ14</a></h2>
-        <iframe data-src="threejs-no4-4/" sandbox="allow-scripts"></iframe>
-    </div>
-
-    <div class="project">
-        <h2><a href="threejs-no5-1/" target="_blank">Three.js デモ15</a></h2>
-        <iframe data-src="threejs-no5-1/" sandbox="allow-scripts"></iframe>
-    </div>
-
-
-    <div class="project">
-        <h2><a href="threejs-animation-system/" target="_blank">Three.js デモ16</a></h2>
-        <iframe data-src="threejs-animation-system/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-mixsamo-anim/" target="_blank">Three.js デモ17</a></h2>
-        <iframe data-src="threejs-mixsamo-anim/" sandbox="allow-scripts"></iframe>
-    </div>
-
-    <div class="project">
-        <h2><a href="threejs-glsl-no1-1/" target="_blank">Three.js シェーダーデモ1</a></h2>
-        <iframe data-src="threejs-glsl-no1-1/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-glsl-no1-2/" target="_blank">Three.js  シェーダーデモ2</a></h2>
-        <iframe data-src="threejs-glsl-no1-2/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-glsl-no1-3/" target="_blank">Three.js  シェーダーデモ3</a></h2>
-        <iframe data-src="threejs-glsl-no1-3/" sandbox="allow-scripts"></iframe>
-    </div>
-
-    <div class="project">
-        <h2><a href="threejs-glsl-no2-1/" target="_blank">Three.js  シェーダーデモ4</a></h2>
-        <iframe data-src="threejs-glsl-no2-1/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-glsl-no2-2/" target="_blank">Three.js  シェーダーデモ5</a></h2>
-        <iframe data-src="threejs-glsl-no2-2/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-glsl-no2-3/" target="_blank">Three.js  シェーダーデモ6</a></h2>
-        <iframe data-src="threejs-glsl-no2-3/" sandbox="allow-scripts"></iframe>
-    </div>
-
-    <div class="project">
-        <h2><a href="threejs-glsl-no3-1/" target="_blank">Three.js  シェーダーデモ7</a></h2>
-        <iframe data-src="threejs-glsl-no3-1/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="threejs-glsl-no3-2/" target="_blank">Three.js  シェーダーデモ8</a></h2>
-        <iframe data-src="threejs-glsl-no3-2/" sandbox="allow-scripts"></iframe>
-    </div>
-
-    <div class="project">
-        <h2><a href="threejs-rain-window/" target="_blank">Three.js  シェーダー窓越しの雨</a></h2>
-        <iframe data-src="threejs-rain-window/" sandbox="allow-scripts"></iframe>
-    </div>
-
-    <div class="project">
-        <h2><a href="webgl-fundamental-1/" target="_blank">WebGL デモ1</a></h2>
-        <iframe data-src="webgl-fundamental-1/" sandbox="allow-scripts"></iframe>
-    </div>
-    <div class="project">
-        <h2><a href="webgl-fundamental-2/" target="_blank">WebGL デモ2</a></h2>
-        <iframe data-src="webgl-fundamental-2/" sandbox="allow-scripts"></iframe>
-    </div>
-  </div>
-
-  <script>
- const iframes = document.querySelectorAll('iframe');
- const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    const iframe = entry.target;
-    const url = iframe.dataset.src;
-
-    if (entry.isIntersecting) {
-      iframe.setAttribute('src', url);
-      iframe.style.visibility = 'visible';
-    } else {
-      iframe.removeAttribute('src');
-      iframe.style.visibility = 'hidden';
-    }
-  });
-}, {
-  rootMargin: "100px",
-  threshold: 0.1
-});
-
-iframes.forEach(iframe => observer.observe(iframe));
-</script>
-</body>
-</html>
-
-    iframes.forEach(iframe => observer.observe(iframe));
-  </script>
 </body>
 </html>
